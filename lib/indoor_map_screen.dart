@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:latlong2/latlong.dart';
 import 'search_bar.dart';
 import 'category_icons.dart';
@@ -58,8 +59,8 @@ class _IndoorMapScreenState extends State<IndoorMapScreen> {
         children: [
           FlutterMap(
             options: MapOptions(
-              center: LatLng(-6.4091399, 108.281624),
-              zoom: 20.0,
+              initialCenter: LatLng(-6.4091399, 108.281624),
+              initialZoom: 20.0,
             ),
             children: [
               TileLayer(
@@ -83,21 +84,22 @@ class _IndoorMapScreenState extends State<IndoorMapScreen> {
               MarkerLayer(
                 markers: [
                   buildMarker(LatLng(-6.40935, 108.28138), "Orang"),
-              ])
+              ]),
+              CurrentLocationLayer(),
             ],
           ),
-          Positioned(
-            top: 40,
-            left: 20,
-            right: 20,
-            child: CustomSearchBar(),
-          ),
-          Positioned(
-            bottom: 20,
-            left: 20,
-            right: 20,
-            child: CategoryIcons(),
-          ),
+          // Positioned(
+          //   top: 40,
+          //   left: 20,
+          //   right: 20,
+          //   child: CustomSearchBar(),
+          // ),
+          // Positioned(
+          //   bottom: 20,
+          //   left: 20,
+          //   right: 20,
+          //   child: CategoryIcons(),
+          // ),
           Positioned(
             top: 70,
             left: 20,

@@ -1,7 +1,7 @@
 // main.dart
 import 'package:flutter/material.dart';
 // 54e
-import 'indoor_map_screen.dart';
+import 'pages/tracker_page.dart';
 
 void main() {
   runApp(IndoorNavigationApp());
@@ -12,7 +12,7 @@ class IndoorNavigationApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: IndoorMapScreen(),
+      home: Tracker(),
     );
   }
 }

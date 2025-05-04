@@ -1,44 +1,50 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:latlong2/latlong.dart';
-import 'search_bar.dart';
-import 'category_icons.dart';
+import 'point/point.dart';
+import 'point/userPoint.dart';
+// import 'search_bar.dart';
+// import 'category_icons.dart';
 
-class IndoorMapScreen extends StatefulWidget {
+class Tracker extends StatefulWidget {
   @override
-  _IndoorMapScreenState createState() => _IndoorMapScreenState();
+  _TrackerState createState() => _TrackerState();
 }
 
-class _IndoorMapScreenState extends State<IndoorMapScreen> {
+class _TrackerState extends State<Tracker> {
 
-  TextStyle getDefaultTextStyle() {
-    return const TextStyle(
-      fontSize: 12,
-      backgroundColor: Colors.black,
-      color: Colors.white,
-    );
-  }
+  // TextStyle getDefaultTextStyle() {
+  //   return const TextStyle(
+  //     fontSize: 12,
+  //     backgroundColor: Colors.black,
+  //     color: Colors.white,
+  //   );
+  // }
   
-  Container buildTextWidget(String word) {
-    return Container(
-        alignment: Alignment.center,
-        child: Text(
-            word,
-            textAlign: TextAlign.center,
-            style: getDefaultTextStyle()
-        )
-    );
-  }
+  // Container buildTextWidget(String word) {
+  //   return Container(
+  //       alignment: Alignment.center,
+  //       child: Text(
+  //           word,
+  //           textAlign: TextAlign.center,
+  //           style: getDefaultTextStyle()
+  //       )
+  //   );
+  // }
   
-  Marker buildMarker(LatLng coordinates, String word) {
-    return Marker(
-        point: coordinates,
-        width: 100,
-        height: 12,
-        child: buildTextWidget(word)
-    );
-  }
+  // Marker buildMarker(LatLng coordinates, Point Function() markerFactory) {
+  //   return Marker(
+  //       point: coordinates,
+  //       width: 100,
+  //       height: 12,
+  //       child: markerFactory()
+  //   );
+  // }
+
+  List<Point> points = [
+    UserPoint(name: "Alice", coordinates: LatLng(1.0, 2.0)),
+    UserPoint(name: "Bob", coordinates: LatLng(-6.40935, 108.28138)),
+  ];
 
   String selectedMap ="1";
   
@@ -54,6 +60,7 @@ class _IndoorMapScreenState extends State<IndoorMapScreen> {
 
   @override
   Widget build(BuildContext context) {
+    List<Marker> markers = points.map((p) => p.buildMarker()).toList();
     return Scaffold(
       body: Stack(
         children: [
@@ -82,10 +89,26 @@ class _IndoorMapScreenState extends State<IndoorMapScreen> {
                 ]
               ),
               MarkerLayer(
-                markers: [
-                  buildMarker(LatLng(-6.40935, 108.28138), "Orang"),
-              ]),
-              CurrentLocationLayer(),
+                markers: markers,
+                // markers: [
+                  // List<Marker> markers = points.map((p) => p.buildMarker()).toList();
+                  // buildMarker(LatLng(-6.40935, 108.28138), () => UserPoint(name: "Alice")),
+                  // buildMarker(LatLng(-6.40935, 108.28138), "Orang"),
+                  // Marker(
+                  //     point: LatLng(-6.40935, 108.28138),
+                  //     width: 100,
+                  //     height: 12,
+                  //     child: Container(
+                  //                 alignment: Alignment.center,
+                  //                 child: Text(
+                  //                     "Orang",
+                  //                     textAlign: TextAlign.center,
+                  //                 )
+                  //             )
+                  // ),
+              // ]
+              ),
+              // CurrentLocationLayer(),
             ],
           ),
           // Positioned(

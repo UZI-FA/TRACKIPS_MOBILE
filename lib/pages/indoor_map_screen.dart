@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-import 'search_bar.dart';
-import 'category_icons.dart';
+import '../search_bar.dart';
+import '../category_icons.dart';
 
 class IndoorMapScreen extends StatefulWidget {
   @override

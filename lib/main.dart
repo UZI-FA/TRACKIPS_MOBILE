@@ -1,37 +1,34 @@
 // main.dart
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
-import 'indoor_map_screen.dart';
-import 'login_page.dart';
+import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
+import 'provider/auth_provider.dart';
+import 'routing.dart';
 
 void main() {
-  runApp(IndoorNavigationApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (guard) => AuthProvider(),
+      child: const IndoorNavigationApp(),
+    ),
+  );
 }
 
-class IndoorNavigationApp extends StatefulWidget {
+class IndoorNavigationApp extends StatelessWidget {
   const IndoorNavigationApp({Key? key}) : super(key: key);
 
   @override
-  State<IndoorNavigationApp> createState() => _IndoorNavigationAppState();
-}
-
-class _IndoorNavigationAppState extends State<IndoorNavigationApp> {
-  bool _isDarkTheme = false;
-
-  void _toggleTheme() {
-    setState(() {
-      _isDarkTheme = !_isDarkTheme;
-    });
-  }
-  
-  @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: LoginPage(
-        isDarkTheme: _isDarkTheme,
-        onThemeToggle: _toggleTheme,
+    final authProvider = Provider.of<AuthProvider>(context);
+
+    final GoRouter router = Routing(authProvider);
+
+    return MaterialApp.router(
+      // title: 'Flutter Map App with go_router',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
       ),
+      routerConfig: router,
     );
   }
 }

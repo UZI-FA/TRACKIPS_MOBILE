@@ -38,8 +38,8 @@ class _RoomPointState extends State<RoomPoint>{
   TextStyle getDefaultTextStyle(){
     return const TextStyle(
       fontSize: 12,
-      backgroundColor: Colors.black,
-      color: Colors.white,
+      // backgroundColor: Colors.black,
+      color: Colors.black,
     );
   }
 
@@ -67,6 +67,8 @@ class _RoomPointState extends State<RoomPoint>{
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.center,
+      height: 200,
+      width: 200,
       child: Text(
           widget.name,
           textAlign: TextAlign.center,

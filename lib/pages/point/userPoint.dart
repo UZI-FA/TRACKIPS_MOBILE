@@ -67,11 +67,16 @@ class _UserPointState extends State<UserPoint>{
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.center,
-      child: Text(
-          widget.name,
-          textAlign: TextAlign.center,
-          style: getDefaultTextStyle()
+      child: CircleAvatar(
+        backgroundColor: Colors.red,
+        radius: 55,
       )
+      ,
+      // child: Text(
+      //     widget.name,
+      //     textAlign: TextAlign.center,
+      //     style: getDefaultTextStyle()
+      // )
     );
   }
 }

@@ -29,6 +29,7 @@ class IndoorNavigationApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       routerConfig: router,
+      debugShowCheckedModeBanner: false,
     );
   }
 }

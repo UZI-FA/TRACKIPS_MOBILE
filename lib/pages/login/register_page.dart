@@ -76,6 +76,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       _error = null;
                     });
                     bool success = await authProvider.register(
+                      _nameController.text.trim(),
                       _emailController.text.trim(),
                       _passwordController.text.trim(),
                     );

@@ -11,7 +11,7 @@ GoRouter Routing(AuthProvider authProvider) {
       refreshListenable: authProvider,
       redirect: (context, state) {
         final loggedIn = authProvider.isAuthenticated;
-        if (loggedIn) authProvider.tryAutoLogin();
+        // if (loggedIn) authProvider.tryAutoLogin();
         
         final loggingIn = state.matchedLocation == '/login' || state.matchedLocation == '/register';
 

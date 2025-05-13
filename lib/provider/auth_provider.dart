@@ -5,7 +5,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'dart:convert';
 
 class AuthProvider extends ChangeNotifier {
-  final String _baseUrl = 'http://localhost:8000/api/user';
+  final String _baseUrl = 'http://192.168.137.1:8000/api/user';
   FlutterSecureStorage _storage = FlutterSecureStorage();
   String? _token;
   String? _refreshToken;
@@ -15,7 +15,7 @@ class AuthProvider extends ChangeNotifier {
   Future<bool> tryAutoLogin() async{
     final token = await getToken();
     if(_token != null){
-      var url = Uri.http('$_baseUrl');
+      var url = Uri.parse('$_baseUrl');
       var response = await http.get(url,headers: {
         'Authorization' : 'Bearer $token'
       },);
@@ -24,13 +24,13 @@ class AuthProvider extends ChangeNotifier {
         return true;
       }
       
-      url = Uri.http('$_baseUrl/refresh-token');
+      url = Uri.parse('$_baseUrl/refresh-token');
       response = await http.get(url,headers: {
         'Authorization' : 'Bearer $_refreshToken'
       },);
       if (response.statusCode == 200){
         final responseData = jsonDecode(response.body);
-        _token = responseData['access_token'];
+        _token = responseData['data']['access_token'];
         
         await _storeTokens(responseData);
 
@@ -45,16 +45,15 @@ class AuthProvider extends ChangeNotifier {
 
   Future<bool> login(String email, String password) async {
     await Future.delayed(const Duration(seconds: 2));
-    var url = Uri.http('$_baseUrl/login');
+    var url = Uri.parse('$_baseUrl/login');
     var response = await http.post(url,body: {
       'email' : email,
       'password' : password
     });
-
     if (response.statusCode == 200) {
       final responseData = jsonDecode(response.body);
-      _token = responseData['access_token'];
-      _refreshToken = responseData['refresh_token'];
+      _token = responseData['data']['access_token'];
+      _refreshToken = responseData['data']['refresh_token'];
 
       await _storeTokens(responseData);
 
@@ -66,18 +65,21 @@ class AuthProvider extends ChangeNotifier {
 
   Future<bool> register(String name,String email, String password) async {
     await Future.delayed(const Duration(seconds: 2));
-    var url = Uri.http('$_baseUrl/register');
+    var url = Uri.parse('$_baseUrl/register');
     var response = await http.post(url,body: {
       'name' : name,
       'email' : email,
       'password' : password,
-      'confirm_password' : password
+      'password_confirmation' : password
     });
+    print(response);
+    print(response.statusCode);
+    print(jsonDecode(response.body));
 
     if (response.statusCode == 200) {
       final responseData = jsonDecode(response.body);
-      _token = responseData['access_token'];
-      _refreshToken = responseData['refresh_token'];
+      _token = responseData['data']['access_token'];
+      _refreshToken = responseData['data']['refresh_token'];
       await _storeTokens(responseData);
 
       notifyListeners();
@@ -89,8 +91,8 @@ class AuthProvider extends ChangeNotifier {
 
   Future<bool> logout() async {
     _token = null;
-    await _storage.delete(key: _token!);
-    await _storage.delete(key: _refreshToken!);
+    await _storage.delete(key: _token ?? '');
+    await _storage.delete(key: _refreshToken ?? '');
 
     await _deleteTokens();
 
@@ -100,25 +102,25 @@ class AuthProvider extends ChangeNotifier {
 
   Future<void> _storeTokens(Map<String, dynamic> response) async {
     await _storage.write(
-      key: _token!,
-      value: response['access_token'],
+      key: _token ?? '',
+      value: response['data']['access_token'],
     );
     
-    if (response.containsKey('refresh_token')) {
+    if (response['data'].containsKey('refresh_token')) {
       await _storage.write(
-        key: _refreshToken!,
-        value: response['refresh_token'],
+        key: _refreshToken ?? '',
+        value: response['data']['refresh_token'],
       );
     }
   }
 
   Future<void> _deleteTokens() async {
-    await _storage.delete(key: _token!);
-    await _storage.delete(key: _refreshToken!);
+    await _storage.delete(key: _token ?? '');
+    await _storage.delete(key: _refreshToken ?? '');
   }
 
   Future<String?> getToken() async {
-    return await _storage.read(key: _token!);
+    return await _storage.read(key: _token ?? '');
   }
 
   void _handleResponse(http.Response response) {

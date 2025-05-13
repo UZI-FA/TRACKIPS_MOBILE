@@ -54,6 +54,11 @@ class _LoginPageState extends State<LoginPage> {
                   _error!,
                   style: const TextStyle(color: Colors.red),
                 ),
+              if (authProvider.isAuthenticated)
+                Text(
+                  'Autentikasi',
+                  style: const TextStyle(color: Colors.red),
+                ),
               const SizedBox(height: 24),
               if (_isLoading)
                 const CircularProgressIndicator(),

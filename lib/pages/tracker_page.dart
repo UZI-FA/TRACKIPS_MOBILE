@@ -22,12 +22,9 @@ class _TrackerState extends State<Tracker> {
       final hitVal = roomNotifier.value;
       var valhit = hitVal?.hitValues.toString();
       if(valhit != "Akademik"){
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('$valhit'),
-            duration: Duration(days: 20),
-          )
-        );
+        setState(() {
+          _showOverlay = true;
+        });
       }
     });
   }
@@ -39,6 +36,7 @@ class _TrackerState extends State<Tracker> {
   ];
 
   String selectedMap ="1";
+  bool _showOverlay = false;
   
   final Map<String, String> mapImages = {
     '1': 'images/Lt_1.jpeg',
@@ -154,6 +152,73 @@ class _TrackerState extends State<Tracker> {
               ),
             ),
           ),
+          if (_showOverlay)
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 0,
+              child: Material(
+                elevation: 8,
+                borderRadius: BorderRadius.circular(12),
+                child: Container(
+                  constraints: BoxConstraints(
+                    maxHeight: MediaQuery.of(context).size.height * 0.35,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Header with Title and Close Button
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        decoration: BoxDecoration(
+                          color: Colors.grey[100],
+                          borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+                        ),
+                        child: Row(
+                          children: [
+                            Text(
+                              "_selectedPolygonId" ?? 'Location',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 16,
+                              ),
+                            ),
+                            Spacer(),
+                            IconButton(
+                              icon: Icon(Icons.close, size: 20),
+                              padding: EdgeInsets.zero,
+                              onPressed: () => setState(() => _showOverlay = false),
+                            ),
+                          ],
+                        ),
+                      ),
+                      // Scrollable Content
+                      Expanded(
+                        child: ListView.builder(
+                          padding: EdgeInsets.zero,
+                          shrinkWrap: true,
+                          itemCount: 10,
+                          itemBuilder: (ctx, index) => ListTile(
+                            title: Text('Option ${index + 1}'),
+                            dense: true,
+                            visualDensity: VisualDensity.compact,
+                            contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                            onTap: () {
+                              print('Selected option ${index + 1}');
+                              setState(() => _showOverlay = false);
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
           // Positioned(
           //   top: 40,
           //   left: 20,

@@ -17,6 +17,7 @@ class _TrackerState extends State<Tracker> {
 
   @override
   void initState(){
+    buildPoint(points);
     super.initState();
     roomNotifier.addListener((){
       final hitVal = roomNotifier.value;
@@ -32,8 +33,29 @@ class _TrackerState extends State<Tracker> {
   List<Point> points = [
     UserPoint(name: "Alice", coordinates: LatLng(-6.40920, 108.28148)),
     UserPoint(name: "Bob", coordinates: LatLng(-6.40935, 108.28138)),
-    RoomPoint(name: "LAB", coordinates: LatLng(-6.40920, 108.28144)),
+    RoomPoint(name: "LAB", coordinates: 
+      [LatLng(-6.40920, 108.28144)]
+    ),
   ];
+
+  final markers = <Marker>[];
+  final polygons = <Polygon>[];
+  void buildPoint(List<Point> points){
+    for (final point in points) {
+      if(point is UserPoint){
+        markers.add(
+          point.buildMarker()
+        );
+      }else if (point is RoomPoint){
+        markers.add(
+          point.buildMarker()
+        );
+        polygons.add(
+          point.buildPolygon()
+        );
+      }
+    }
+  }
 
   String selectedMap ="1";
   bool _showOverlay = false;
@@ -53,7 +75,7 @@ class _TrackerState extends State<Tracker> {
 
   @override
   Widget build(BuildContext context) {
-    List<Marker> markers = points.map((p) => p.buildMarker()).toList();
+    // List<Marker> markers = points.map((p) => p.buildMarker()).toList();
     return Scaffold(
       body: Stack(
         children: [
@@ -117,7 +139,6 @@ class _TrackerState extends State<Tracker> {
                     color: Colors.blue.withValues(alpha: 0.2),
                     borderColor: Colors.red.withValues(alpha: 0.4),
                     borderStrokeWidth: 2
-                    
                   )
                 ]
               )

@@ -3,20 +3,19 @@ import 'provider/auth_provider.dart';
 import 'pages/login/login_page.dart';
 import 'pages/login/register_page.dart';
 import 'pages/dashboard_page.dart';
-import 'pages/map_page.dart';
 import 'pages/tracker_page.dart';
 
 GoRouter Routing(AuthProvider authProvider) {
     return GoRouter(
-      initialLocation: authProvider.isAuthenticated ? '/dashboard' : '/login',
+      initialLocation: authProvider.isAuthenticated ? '/dashboard' : '/map',
       refreshListenable: authProvider,
       redirect: (context, state) {
         final loggedIn = authProvider.isAuthenticated;
         // if (loggedIn) authProvider.tryAutoLogin();
         
-        final loggingIn = state.matchedLocation == '/login' || state.matchedLocation == '/register';
+        final loggingIn = state.matchedLocation == '/map' || state.matchedLocation == '/register';
 
-        if (!loggedIn && !loggingIn) return '/login';
+        if (!loggedIn && !loggingIn) return '/map';
         if (loggedIn && loggingIn) return '/dashboard';
         return null;
       },

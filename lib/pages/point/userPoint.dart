@@ -7,6 +7,7 @@ import 'package:latlong2/latlong.dart';
 class UserPoint extends StatefulWidget  implements Point{
   final String name;
   final LatLng coordinates;
+  bool visible = true;
 
   UserPoint({super.key, required this.name, required this.coordinates});
 
@@ -16,7 +17,28 @@ class UserPoint extends StatefulWidget  implements Point{
   State<UserPoint> createState() => _UserPointState();
 
   @override
-  void togglePoint() => _key.currentState?.togglePoint();
+  bool togglePoint(){
+    visible = !visible;
+    return visible;
+  }
+
+  @override
+  Polygon buildPolygon() {
+    return Polygon(
+      hitValue: "Akademik",
+      points: [
+        LatLng(-6.409106, 108.281527),
+        LatLng(-6.409156, 108.281528), 
+        LatLng(-6.409156, 108.281494),
+        LatLng(-6.409308, 108.281461),
+        LatLng(-6.409310, 108.281403),
+        LatLng(-6.409105, 108.281405),
+      ],
+      color: Colors.blue.withValues(alpha: 0.2),
+      borderColor: Colors.red.withValues(alpha: 0.4),
+      borderStrokeWidth: 2
+    );
+  }
 
   @override
   Widget getDesc() => _key.currentState?.getDesc() ?? const SizedBox.shrink();

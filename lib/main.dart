@@ -2,8 +2,6 @@
 import 'package:flutter/material.dart';
 
 // 54e
-import 'pages/tracker_page.dart';
-
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'provider/auth_provider.dart';

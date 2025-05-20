@@ -4,6 +4,14 @@ import 'package:latlong2/latlong.dart';
 import 'point/point.dart';
 import 'point/userPoint.dart';
 import 'point/roomPoint.dart';
+// import '../search_bar.dart';
+import 'package:standard_searchbar/new/standard_search_anchor.dart';
+import 'package:standard_searchbar/new/standard_search_bar.dart';
+import 'package:standard_searchbar/new/standard_suggestion.dart';
+import 'package:standard_searchbar/new/standard_suggestions.dart';
+
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 // import 'search_bar.dart';
 // import 'category_icons.dart';
 
@@ -14,10 +22,48 @@ class Tracker extends StatefulWidget {
 
 class _TrackerState extends State<Tracker> {
   final LayerHitNotifier roomNotifier = ValueNotifier(null);
+  
+  List<Point> points = [
+    UserPoint(name: "Alice", coordinates: LatLng(-6.40920, 108.28148)),
+    UserPoint(name: "Bob", coordinates: LatLng(-6.40935, 108.28138)),
+    RoomPoint(name: "LAB", coordinates: 
+      [LatLng(-6.40920, 108.28144)]
+    ),
+  ];
+
+  Future<bool> fetchResouces() async {
+    var url = Uri.parse('http://192.168.137.1:8000/api/map/1');
+    var response = await http.get(url,headers: {
+      'Authorization' : 'Bearer 9fBbqvSou7dl5X1GUTrsCzqgQO6nrAQBKCkhieom2908c496'
+    });
+    if (response.statusCode == 200) {
+      //retrieve data
+      var data = jsonDecode(response.body)['data'];
+      
+      //RoomPoint
+      for (var value in data['room']) {
+        List<LatLng> bounds = [];
+        for (var bound in value['bounds']) {
+          // assign bounds 
+          bounds.add(LatLng(double.parse(bound['latitude']),double.parse(bound['longitude'])));
+        }
+        // add new RoomPoint
+        points.add(RoomPoint(name: value['name'],coordinates: bounds,));
+      }
+
+      //UserPoint
+      // for (var value in data['user']) {
+      //   points.add(UserPoint(name: value['name'],coordinates: bounds,));
+      // }
+      return true;
+    }
+    return false;
+  }
 
   @override
   void initState(){
     buildPoint(points);
+    // fetchResouces();
     super.initState();
     roomNotifier.addListener((){
       final hitVal = roomNotifier.value;
@@ -30,13 +76,7 @@ class _TrackerState extends State<Tracker> {
     });
   }
 
-  List<Point> points = [
-    UserPoint(name: "Alice", coordinates: LatLng(-6.40920, 108.28148)),
-    UserPoint(name: "Bob", coordinates: LatLng(-6.40935, 108.28138)),
-    RoomPoint(name: "LAB", coordinates: 
-      [LatLng(-6.40920, 108.28144)]
-    ),
-  ];
+
 
   final markers = <Marker>[];
   final polygons = <Polygon>[];
@@ -153,7 +193,7 @@ class _TrackerState extends State<Tracker> {
           const Center(
             child: Icon(Icons.add_location, color: Colors.red, size: 32),
           ),
-          // Coordinates info box
+          // // Coordinates info box
           Positioned(
             bottom: 20,
             left: 20,
@@ -244,7 +284,18 @@ class _TrackerState extends State<Tracker> {
           //   top: 40,
           //   left: 20,
           //   right: 20,
-          //   child: CustomSearchBar(),
+          //   child: StandardSearchAnchor(
+          //         searchBar: StandardSearchBar(
+          //           bgColor: Colors.white,
+          //         ),
+          //         suggestions: StandardSuggestions(
+          //           suggestions: [
+          //             StandardSuggestion(text: 'Suggestion 1',),
+          //             StandardSuggestion(text: 'Suggestion 2'),
+          //             StandardSuggestion(text: 'Suggestion 3'),
+          //           ],
+          //         ),
+          //       ),
           // ),
           // Positioned(
           //   bottom: 20,

@@ -43,6 +43,8 @@ dependencies:
   go_router: ^15.1.1
   google_fonts: ^6.1.0
   flutter_secure_storage: ^9.2.4
+  standard_searchbar: ^2.1.1
+  flutter_map_animations: ^0.9.0
 
 dev_dependencies:
   flutter_test:

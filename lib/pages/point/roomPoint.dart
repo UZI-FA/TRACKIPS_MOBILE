@@ -7,6 +7,7 @@ import 'package:latlong2/latlong.dart';
 class RoomPoint extends StatefulWidget  implements Point{
   final String name;
   final List<LatLng> coordinates;
+  bool visible = true;
 
   RoomPoint({super.key, required this.name, required this.coordinates});
 
@@ -16,7 +17,10 @@ class RoomPoint extends StatefulWidget  implements Point{
   State<RoomPoint> createState() => _RoomPointState();
 
   @override
-  void togglePoint() => _key.currentState?.togglePoint();
+  bool togglePoint(){
+    visible = !visible;
+    return visible;
+  }
 
   @override
   Widget getDesc() => _key.currentState?.getDesc() ?? const SizedBox.shrink();
@@ -44,6 +48,8 @@ class RoomPoint extends StatefulWidget  implements Point{
       child: this,
     );
   }
+
+  @override
   Polygon buildPolygon() {
     return Polygon(
       hitValue: "Akademik",

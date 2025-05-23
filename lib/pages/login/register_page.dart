@@ -85,9 +85,10 @@ class _RegisterPageState extends State<RegisterPage> {
                     });
                     if (success) {
                       context.go('/dashboard');
-                    } else {
+                    }else{
                       setState(() {
                         _error = 'Registration failed';
+                        context.go('/register');
                       });
                     }
                   },

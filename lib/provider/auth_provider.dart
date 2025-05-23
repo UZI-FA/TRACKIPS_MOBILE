@@ -5,7 +5,10 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'dart:convert';
 
 class AuthProvider extends ChangeNotifier {
-  final String _baseUrl = 'http://192.168.137.1:8000/api/user';
+  // local mobile
+  // final String _baseUrl = 'http://192.168.137.1:8000/api/user';
+  // local web
+  final String _baseUrl = 'http://127.0.0.1:8000/api/user';
   FlutterSecureStorage _storage = FlutterSecureStorage();
   String? _token;
   String? _refreshToken;

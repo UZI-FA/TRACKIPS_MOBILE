@@ -73,11 +73,14 @@ class _TrackerState extends State<Tracker> {
       }
       // print("----pisah----\n points :");
       // print(points[0]);
-
+        Map<String, RoomPoint> roomMap = {
+          for (var point in points)
+            if (point is RoomPoint) point.name: point
+        };
       //UserPoint
-      // for (var value in data['user']) {
-      //   points.add(UserPoint(name: value['name'],coordinates: bounds,));
-      // }
+      for (var value in data['user']) {
+        points.add(UserPoint(name: value['name'],coordinates: roomMap[value['room']]!.center_coordinate(),));
+      }
       buildPoint(points);
       return true;
     }

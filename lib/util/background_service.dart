@@ -38,7 +38,7 @@ void onStart(ServiceInstance service) async {
 
     final bssid = await getStrongestBSSID();
     if (bssid != null) {
-      final url = Uri.parse("http://192.168.1.100/wifi/$bssid"); // ganti dengan IP server kamu
+      final url = Uri.parse("https://trackips.my.id/api/user-update-location/$bssid"); // ganti dengan IP server kamu
       try {
         final res = await http.get(url);
         print("Sent BSSID: $bssid, status: ${res.statusCode}");

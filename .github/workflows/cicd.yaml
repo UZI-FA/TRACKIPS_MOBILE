@@ -28,7 +28,7 @@ jobs:
           dart --version
       
       - name: Accept Android SDK licenses
-        run: yes | sdkmanager --licenses
+        run: yes | ~/Android/Sdk/tools/bin/sdkmanager --licenses
 
       - name: Run build APK
         run: flutter build apk --release

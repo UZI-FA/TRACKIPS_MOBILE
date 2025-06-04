@@ -85,14 +85,16 @@ class _TrackerState extends State<Tracker> {
     return false;
   }
 
-  Future<List<String>> fetchUserInRoom(String room) async{
+  Future<void> fetchUserInRoom(String room) async{
     final token = Provider.of<AuthProvider>(context, listen: false).token;
     users = [];
     var url = Uri.parse('https://trackips.my.id/api/user-room/${room}');
     var response = await http.get(url,headers: {
       // 'Authorization' : 'Bearer $token'
-      'Authorization' : 'Bearer $token'
+      'Authorization' : 'Bearer wqCgnMYzXC9Fg4Il0Tw6ICB5tIY2upnSSrqp1vkO5f268105'
     });
+    print(response.statusCode);
+    print(room);
     if (response.statusCode == 200) {
       //retrieve data
       var data = jsonDecode(response.body)['data'];
@@ -101,7 +103,6 @@ class _TrackerState extends State<Tracker> {
         users.add(value['name']);
       }
     }
-    return users;
   }
 
   @override
@@ -200,15 +201,15 @@ class _TrackerState extends State<Tracker> {
               MarkerLayer(
                 markers: markers,
               ),
-              CircleLayer(
-                circles: [
-                  CircleMarker(
-                    point: LatLng(-6.40940, 108.28138),
-                    radius: 0.5,
-                    useRadiusInMeter: true,
-                  ),
-                ],
-              ),
+              // CircleLayer(
+              //   circles: [
+              //     CircleMarker(
+              //       point: LatLng(-6.40940, 108.28138),
+              //       radius: 0.5,
+              //       useRadiusInMeter: true,
+              //     ),
+              //   ],
+              // ),
               
               PolygonLayer(
                 hitNotifier: roomNotifier,
@@ -218,33 +219,33 @@ class _TrackerState extends State<Tracker> {
               MarkerLayer(
                 markers: markers,
               ),
-              // CurrentLocationLayer(),
+              CurrentLocationLayer(),
             ],
           ),
           // Crosshair in center
-          const Center(
-            child: Icon(Icons.add_location, color: Colors.red, size: 32),
-          ),
+          // const Center(
+          //   child: Icon(Icons.add_location, color: Colors.red, size: 32),
+          // ),
           // Coordinates info box
-          Positioned(
-            bottom: 20,
-            left: 20,
-            right: 20,
-            child: Card(
-              color: Colors.white.withOpacity(0.8),
-              elevation: 4,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-              child: Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Text(
-                  "Center Coordinate:\nLat: ${_center.latitude.toStringAsFixed(6)}, "
-                  "Lng: ${_center.longitude.toStringAsFixed(6)}",
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 16),
-                ),
-              ),
-            ),
-          ),
+          // Positioned(
+          //   bottom: 20,
+          //   left: 20,
+          //   right: 20,
+          //   child: Card(
+          //     color: Colors.white.withOpacity(0.8),
+          //     elevation: 4,
+          //     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          //     child: Padding(
+          //       padding: const EdgeInsets.all(12.0),
+          //       child: Text(
+          //         "Center Coordinate:\nLat: ${_center.latitude.toStringAsFixed(6)}, "
+          //         "Lng: ${_center.longitude.toStringAsFixed(6)}",
+          //         textAlign: TextAlign.center,
+          //         style: const TextStyle(fontSize: 16),
+          //       ),
+          //     ),
+          //   ),
+          // ),
           if (_showOverlay)
             Positioned(
               left: 0,
@@ -296,7 +297,7 @@ class _TrackerState extends State<Tracker> {
                           shrinkWrap: true,
                           itemCount: users.length,
                           itemBuilder: (ctx, index) => ListTile(
-                            title: Text('Option ${users[index]}'),
+                            title: Text('${index+1}. ${users[index]}'),
                             dense: true,
                             visualDensity: VisualDensity.compact,
                             contentPadding: EdgeInsets.symmetric(horizontal: 16),
@@ -353,8 +354,8 @@ class _TrackerState extends State<Tracker> {
             ),
           ),
           Positioned(
-            top: 43,
-            right: 20,
+            top: 42,
+            right: 18,
             child: IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () {

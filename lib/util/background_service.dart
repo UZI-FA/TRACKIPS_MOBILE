@@ -49,9 +49,9 @@ void onStart(ServiceInstance service) {
   //     content: "Sending strongest BSSID...",
   //   );
   // }
+  final storage = FlutterSecureStorage();
 
   Timer.periodic(const Duration(minutes: 1), (timer) async {
-    final storage = FlutterSecureStorage();
     final token = await storage.read(key: 'access_token');
 
     final bssid = await getStrongestBSSID();
@@ -59,7 +59,7 @@ void onStart(ServiceInstance service) {
     
     final url = Uri.parse("https://trackips.my.id/api/user-update-location/$bssid");
     try {
-      final res = await http.get(url,headers: {
+      final res = await http.post(url,headers: {
         'Authorization' : 'Bearer $token'
       });
       debugPrint("Sent BSSID: $bssid | Status: ${res.statusCode}");

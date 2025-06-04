@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
+
 import 'point/point.dart';
 import 'point/userPoint.dart';
 import 'point/roomPoint.dart';
@@ -204,7 +206,7 @@ class _TrackerState extends State<Tracker> {
               MarkerLayer(
                 markers: markers,
               ),
-              // CurrentLocationLayer(),
+              CurrentLocationLayer(),
             ],
           ),
           // Crosshair in center

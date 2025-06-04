@@ -50,8 +50,8 @@ class _TrackerState extends State<Tracker> {
     final token = Provider.of<AuthProvider>(context, listen: false).token;
     var url = Uri.parse('https://trackips.my.id/api/map/1');
     var response = await http.get(url,headers: {
-      'Authorization' : 'Bearer wqCgnMYzXC9Fg4Il0Tw6ICB5tIY2upnSSrqp1vkO5f268105'
-      // 'Authorization' : 'Bearer $token'
+      // 'Authorization' : 'Bearer wqCgnMYzXC9Fg4Il0Tw6ICB5tIY2upnSSrqp1vkO5f268105'
+      'Authorization' : 'Bearer $token'
     });
     // print(response.statusCode);
     // print(jsonDecode(response.body));
@@ -90,8 +90,8 @@ class _TrackerState extends State<Tracker> {
     users = [];
     var url = Uri.parse('https://trackips.my.id/api/user-room/${room}');
     var response = await http.get(url,headers: {
-      // 'Authorization' : 'Bearer $token'
-      'Authorization' : 'Bearer wqCgnMYzXC9Fg4Il0Tw6ICB5tIY2upnSSrqp1vkO5f268105'
+      'Authorization' : 'Bearer $token'
+      // 'Authorization' : 'Bearer wqCgnMYzXC9Fg4Il0Tw6ICB5tIY2upnSSrqp1vkO5f268105'
     });
     print(response.statusCode);
     print(room);

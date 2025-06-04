@@ -3,6 +3,8 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 
+import 'package:go_router/go_router.dart';
+
 import 'point/point.dart';
 import 'point/userPoint.dart';
 import 'point/roomPoint.dart';
@@ -150,7 +152,7 @@ class _TrackerState extends State<Tracker> {
 
   @override
   Widget build(BuildContext context) {
-        print('check');
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
     // List<Marker> markers = points.map((p) => p.buildMarker()).toList();
     return Scaffold(
       body: Stack(
@@ -339,6 +341,17 @@ class _TrackerState extends State<Tracker> {
               dropdownColor: Colors.white,
               style: TextStyle(color: Colors.black),
             ),
+          ),
+          Positioned(
+            top: 20,
+            left: 20,
+            child: IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () {
+              authProvider.logout();
+              context.go('/login');
+            },
+          ),
           ),
         ],
       ),

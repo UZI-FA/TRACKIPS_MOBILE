@@ -7,7 +7,7 @@ import 'pages/tracker_page.dart';
 
 GoRouter Routing(AuthProvider authProvider) {
     return GoRouter(
-      initialLocation: authProvider.isAuthenticated ? '/dashboard' : '/login',
+      initialLocation: authProvider.isAuthenticated ? '/map' : '/login',
       refreshListenable: authProvider,
       redirect: (context, state) {
         final loggedIn = authProvider.isAuthenticated;
@@ -16,7 +16,7 @@ GoRouter Routing(AuthProvider authProvider) {
         final loggingIn = state.matchedLocation == '/login' || state.matchedLocation == '/register';
 
         if (!loggedIn && !loggingIn) return '/login';
-        if (loggedIn && loggingIn) return '/dashboard';
+        if (loggedIn && loggingIn) return '/map';
         return null;
       },
       routes: [

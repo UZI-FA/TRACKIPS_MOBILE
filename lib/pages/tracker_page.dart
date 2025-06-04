@@ -343,8 +343,8 @@ class _TrackerState extends State<Tracker> {
             ),
           ),
           Positioned(
-            top: 20,
-            left: 20,
+            top: 45,
+            right: 20,
             child: IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () {

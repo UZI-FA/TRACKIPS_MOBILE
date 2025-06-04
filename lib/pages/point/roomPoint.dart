@@ -52,15 +52,8 @@ class RoomPoint extends StatefulWidget  implements Point{
   @override
   Polygon buildPolygon() {
     return Polygon(
-      hitValue: "Akademik",
-      points: [
-        LatLng(-6.409106, 108.281527),
-        LatLng(-6.409156, 108.281528), 
-        LatLng(-6.409156, 108.281494),
-        LatLng(-6.409308, 108.281461),
-        LatLng(-6.409310, 108.281403),
-        LatLng(-6.409105, 108.281405),
-      ],
+      hitValue: name,
+      points: coordinates,
       color: Colors.blue.withValues(alpha: 0.2),
       borderColor: Colors.red.withValues(alpha: 0.4),
       borderStrokeWidth: 2

@@ -6,12 +6,12 @@ import 'package:flutter_map/flutter_map.dart';
 
 class CustomSearchBar extends StatefulWidget {
   final List<Point> points;
-  // final MapController mapController;
+  final MapController mapController;
 
   const CustomSearchBar({
     Key? key,
     required this.points,
-    // required this.mapController,
+    required this.mapController,
   }) : super(key: key);
 
   @override
@@ -37,9 +37,13 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
     });
   }
 
-  // void _goToMarker() {
-  //   widget.mapController.move(_initialCenter, 20.0);
-  // }
+  void _goToMarker(Point poin) {
+    if (poin is RoomPoint) {
+      widget.mapController.move(poin.center_coordinate(), 20.0);
+    }else if(poin is UserPoint){
+      widget.mapController.move(poin.coordinates, 20.0);
+    }
+  }
   
   @override
 Widget build(BuildContext context) {
@@ -104,6 +108,7 @@ Widget build(BuildContext context) {
                   title: Text(point.name),
                   onTap: () {
                     _searchController.text = point.name;
+                    _goToMarker(point);
                     setState(() {
                       _searchQuery = '';
                       _filteredPoints = [point]; // Optional: limit to selected

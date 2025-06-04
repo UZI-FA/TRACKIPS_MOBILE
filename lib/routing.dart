@@ -7,15 +7,15 @@ import 'pages/tracker_page.dart';
 
 GoRouter Routing(AuthProvider authProvider) {
     return GoRouter(
-      initialLocation: authProvider.isAuthenticated ? '/dashboard' : '/map',
+      initialLocation: authProvider.isAuthenticated ? '/dashboard' : '/login',
       refreshListenable: authProvider,
       redirect: (context, state) {
         final loggedIn = authProvider.isAuthenticated;
         // if (loggedIn) authProvider.tryAutoLogin();
         
-        final loggingIn = state.matchedLocation == '/map' || state.matchedLocation == '/register';
+        final loggingIn = state.matchedLocation == '/login' || state.matchedLocation == '/register';
 
-        if (!loggedIn && !loggingIn) return '/map';
+        if (!loggedIn && !loggingIn) return '/login';
         if (loggedIn && loggingIn) return '/dashboard';
         return null;
       },

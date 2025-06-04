@@ -25,24 +25,24 @@ class RoomPoint extends StatefulWidget  implements Point{
   @override
   Widget getDesc() => _key.currentState?.getDesc() ?? const SizedBox.shrink();
 
-  LatLng center_coordinate(List<LatLng> points){
+  LatLng center_coordinate(){
     double totalLat = 0;
     double totalLng = 0;
     
-    for (final point in points) {
+    for (final point in coordinates) {
       totalLat += point.latitude;
       totalLng += point.longitude;
     }
     
     return LatLng(
-      totalLat / points.length,
-      totalLng / points.length,
+      totalLat / coordinates.length,
+      totalLng / coordinates.length,
     );
   }
   @override
   Marker buildMarker() {
     return Marker(
-      point: center_coordinate(coordinates),
+      point: center_coordinate(),
       width: 100,
       height: 12,
       child: this,

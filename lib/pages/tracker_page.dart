@@ -6,6 +6,9 @@ import 'point/userPoint.dart';
 import 'point/roomPoint.dart';
 import '../search_bar.dart';
 
+import '../provider/auth_provider.dart';
+import 'package:provider/provider.dart';
+
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 // import 'search_bar.dart';
@@ -19,11 +22,17 @@ class Tracker extends StatefulWidget {
 class _TrackerState extends State<Tracker> {
   final LayerHitNotifier roomNotifier = ValueNotifier(null);
   
+  
   late final MapController _mapController;
   LatLng _center = LatLng(-6.2, 106.816666);
   final LatLng _initialCenter = LatLng(-6.409090, 108.281653);
   List<String> users = [];
-  String _selectedPolygon = "Lantai 1";
+  String _selectedPolygon = "[Lantai 1]";
+  String _selectedPolygonName = "Lantai 1";
+  final markers = <Marker>[];
+  final polygons = <Polygon>[];
+  String selectedMap ="1";
+  bool _showOverlay = false;
   
   List<Point> points = [
     UserPoint(name: "Alice", coordinates: LatLng(-6.40920, 108.28148)),
@@ -34,9 +43,10 @@ class _TrackerState extends State<Tracker> {
   ];
 
   Future<bool> fetchResouces() async {
-    var url = Uri.parse('http://192.168.137.1:8000/api/map/1');
+    final token = Provider.of<AuthProvider>(context, listen: false).token;
+    var url = Uri.parse('https://trackips.my.id/api/map/1');
     var response = await http.get(url,headers: {
-      'Authorization' : 'Bearer 9fBbqvSou7dl5X1GUTrsCzqgQO6nrAQBKCkhieom2908c496'
+      'Authorization' : 'Bearer $token'
     });
     if (response.statusCode == 200) {
       //retrieve data
@@ -85,14 +95,15 @@ class _TrackerState extends State<Tracker> {
     super.initState();
     buildPoint(points);
     print('checkInit');
-    // fetchUserInRoom("Akademik");
-    // fetchResouces();
+    fetchResouces();
     _mapController = MapController();
     roomNotifier.addListener((){
       final hitVal = roomNotifier.value;
       var valhit = hitVal?.hitValues;
       _selectedPolygon = valhit.toString();
-      if(_selectedPolygon != "Akademik"){
+      if(_selectedPolygon != "null"){
+        _selectedPolygonName = _selectedPolygon.substring(1,_selectedPolygon.length-1);
+        fetchUserInRoom(_selectedPolygonName);
         setState(() {
           _showOverlay = true;
         });
@@ -100,10 +111,6 @@ class _TrackerState extends State<Tracker> {
     });
   }
 
-
-
-  final markers = <Marker>[];
-  final polygons = <Polygon>[];
   void buildPoint(List<Point> points){
     for (final point in points) {
       if(point is UserPoint){
@@ -121,8 +128,7 @@ class _TrackerState extends State<Tracker> {
     }
   }
 
-  String selectedMap ="1";
-  bool _showOverlay = false;
+
   
   void _resetToInitialCenter() {
     _mapController.move(_initialCenter, 20.0);
@@ -253,7 +259,7 @@ class _TrackerState extends State<Tracker> {
                         child: Row(
                           children: [
                             Text(
-                              _selectedPolygon ?? 'Location',
+                              _selectedPolygonName ?? 'Location',
                               style: TextStyle(
                                 fontWeight: FontWeight.w600,
                                 fontSize: 16,
@@ -295,7 +301,7 @@ class _TrackerState extends State<Tracker> {
             top: 40,
             left: 20,
             right: 20,
-            child: CustomSearchBar(points: points)
+            child: CustomSearchBar(points: points, mapController: _mapController,)
           ),
           // Positioned(
           //   bottom: 20,
@@ -313,7 +319,7 @@ class _TrackerState extends State<Tracker> {
           ),
           Positioned(
             top: 50,
-            right: 30,
+            right: 70,
             child: DropdownButton<String>(
               value: selectedMap,
               items: mapImages.keys.map((label) {

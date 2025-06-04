@@ -8,7 +8,8 @@ import 'provider/auth_provider.dart';
 import 'routing.dart';
 
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(
     ChangeNotifierProvider(
       create: (guard) => AuthProvider(),

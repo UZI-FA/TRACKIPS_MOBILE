@@ -4,13 +4,18 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'dart:convert';
 
+import '../util/background_service.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
 class AuthProvider extends ChangeNotifier {
   // local mobile
   // final String _baseUrl = 'http://192.168.137.1:8000/api/user';
   // local web
-  final String _baseUrl = 'http://127.0.0.1:8000/api/user';
+  // final String _baseUrl = 'http://127.0.0.1:8000/api/user';
+  // production
+  final String _baseUrl = 'https://trackips.my.id/api/user';
   FlutterSecureStorage _storage = FlutterSecureStorage();
   String? _token;
+  String? get token => _token;
   String? _refreshToken;
 
   bool get isAuthenticated => _token != null;
@@ -60,6 +65,9 @@ class AuthProvider extends ChangeNotifier {
 
       await _storeTokens(responseData);
 
+      // Mulai background service
+      await initializeService();
+
       notifyListeners();
       return true;
     }
@@ -98,6 +106,10 @@ class AuthProvider extends ChangeNotifier {
     await _storage.delete(key: _refreshToken ?? '');
 
     await _deleteTokens();
+
+    // Hentikan background service
+    final service = FlutterBackgroundService();
+    service.invoke("stopService");
 
     notifyListeners();
     return true;

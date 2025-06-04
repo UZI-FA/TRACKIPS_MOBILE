@@ -73,10 +73,11 @@ class _TrackerState extends State<Tracker> {
   }
 
   Future<List<String>> fetchUserInRoom(String room) async{
+    final token = Provider.of<AuthProvider>(context, listen: false).token;
     users = [];
-    var url = Uri.parse('http://127.0.0.1:8000/api/user-room/${room}');
+    var url = Uri.parse('https://trackips.my.id/api/user-room/${room}');
     var response = await http.get(url,headers: {
-      'Authorization' : 'Bearer 9fBbqvSou7dl5X1GUTrsCzqgQO6nrAQBKCkhieom2908c496'
+      'Authorization' : 'Bearer $token'
     });
     print(response.body);
     if (response.statusCode == 200) {

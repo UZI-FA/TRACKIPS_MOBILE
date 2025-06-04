@@ -22,7 +22,7 @@ class AuthProvider extends ChangeNotifier {
 
   Future<bool> tryAutoLogin() async{
     final token = await getToken();
-    if(_token != null){
+    if(token != null){
       var url = Uri.parse('$_baseUrl');
       var response = await http.get(url,headers: {
         'Authorization' : 'Bearer $token'

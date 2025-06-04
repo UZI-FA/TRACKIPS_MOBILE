@@ -26,11 +26,12 @@ jobs:
         run: |
           flutter --version
           dart --version
-      - name: Run build APK
-        run: flutter build apk --release
-        
+      
       - name: Accept Android SDK licenses
         run: yes | sdkmanager --licenses
+
+      - name: Run build APK
+        run: flutter build apk --release
 
       - name: Extract version from pubspec
         id: extract_version

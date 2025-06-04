@@ -66,7 +66,7 @@ class AuthProvider extends ChangeNotifier {
       await _storeTokens(responseData);
 
       // Mulai background service
-      await initializeService();
+      await ServiceBackground().init();
 
       notifyListeners();
       return true;
@@ -108,8 +108,7 @@ class AuthProvider extends ChangeNotifier {
     await _deleteTokens();
 
     // Hentikan background service
-    final service = FlutterBackgroundService();
-    service.invoke("stopService");
+    await ServiceBackground().stop();
 
     notifyListeners();
     return true;

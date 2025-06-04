@@ -1,74 +1,64 @@
 import 'dart:async';
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_background_service/flutter_background_service.dart';
-import 'package:flutter_background_service_android/flutter_background_service_android.dart';
-import 'package:wifi_scan/wifi_scan.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_background_service/flutter_background_service.dart';
 
-Future<void> initializeService() async {
-  final service = FlutterBackgroundService();
+class ServiceBackground {
+  static final ServiceBackground instance = ServiceBackground._internal();
 
-  await service.configure(
-    androidConfiguration: AndroidConfiguration(
-      onStart: onStart,
-      autoStart: false, // jangan auto start, kita jalankan manual setelah login
-      isForegroundMode: true,
-      notificationChannelId: 'wifi_channel',
-      initialNotificationTitle: 'WiFi Tracker Active',
-      initialNotificationContent: 'Scanning for strongest BSSID...',
-    ),
-    iosConfiguration: IosConfiguration(),
-  );
+  factory ServiceBackground() => instance;
 
-  await service.startService();
-}
+  ServiceBackground._internal();
 
-void onStart(ServiceInstance service) async {
-  // Jika berjalan di Android, tampilkan notifikasi foreground
-  WidgetsFlutterBinding.ensureInitialized();
-  if (service is AndroidServiceInstance) {
-    service.setAsForegroundService();
+  Future<void> init() async {
+    final service = FlutterBackgroundService();
+
+    await service.configure(
+      androidConfiguration: AndroidConfiguration(
+        onStart: onStart,
+        autoStart: true,
+        isForegroundMode: true,
+        initialNotificationTitle: 'Wi-Fi Tracker',
+        initialNotificationContent: 'Tracking BSSID in background',
+        // notificationChannelId: 'wifi_service_channel',
+      ),
+      iosConfiguration: IosConfiguration(),
+    );
+
+    await service.startService();
   }
 
-  // Handler untuk menghentikan service dari luar (dari logout misalnya)
+  Future<void> stop() async {
+    final service = FlutterBackgroundService();
+    service.invoke("stopService");
+  }
+}
+
+@pragma('vm:entry-point')
+void onStart(ServiceInstance service) {
+  DartPluginRegistrant.ensureInitialized();
+  if (service is AndroidServiceInstance) {
+    service.setForegroundNotificationInfo(
+      title: "Wi-Fi Tracker Active",
+      content: "Sending strongest BSSID...",
+    );
+  }
+
+  Timer.periodic(const Duration(minutes: 5), (timer) async {
+    final bssid = "00:11:22:33:44:55"; // Dummy BSSID
+    // final url = Uri.parse("https://trackips.my.id/api/user-update-location/$bssid"); // Ganti sesuai kebutuhan
+
+    // try {
+    //   final res = await http.get(url);
+    //   debugPrint("BSSID sent: ${res.statusCode}");
+    // } catch (e) {
+    //   debugPrint("Error: $e");
+    // }
+  });
+
   service.on("stopService").listen((event) {
     service.stopSelf();
   });
-
-  // Timer untuk scanning BSSID setiap 5 menit
-  Timer.periodic(const Duration(minutes: 5), (timer) async {
-
-    final bssid = '23:DE:7C:AA:35';
-    // final bssid = await getStrongestBSSID();
-    if (bssid != null) {
-      final url = Uri.parse("https://trackips.my.id/api/user-update-location/$bssid"); // ganti dengan IP server kamu
-      try {
-        final res = await http.get(url);
-        print("Sent BSSID: $bssid, status: ${res.statusCode}");
-      } catch (e) {
-        print("Error sending BSSID: $e");
-      }
-    } else {
-      print("No BSSID found.");
-    }
-  });
-}
-
-Future<String?> getStrongestBSSID() async {
-  final can = await WiFiScan.instance.canGetScannedResults();
-  if (can != CanGetScannedResults.yes) {
-    print("Cannot get WiFi scan results.");
-    return null;
-  }
-
-  await WiFiScan.instance.startScan();
-  final results = await WiFiScan.instance.getScannedResults();
-  if (results.isEmpty) {
-    print("No WiFi networks found.");
-    return null;
-  }
-
-  // Ambil BSSID dengan sinyal terkuat
-  results.sort((a, b) => b.level!.compareTo(a.level!));
-  return results.first.bssid;
 }

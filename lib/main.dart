@@ -5,11 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'provider/auth_provider.dart';
+import 'util/background_service.dart';
 import 'routing.dart';
 
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await ServiceBackground.instance.init();
   runApp(
     ChangeNotifierProvider(
       create: (guard) => AuthProvider(),

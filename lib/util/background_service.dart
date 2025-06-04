@@ -36,7 +36,8 @@ void onStart(ServiceInstance service) async {
   // Timer untuk scanning BSSID setiap 5 menit
   Timer.periodic(const Duration(minutes: 5), (timer) async {
 
-    final bssid = await getStrongestBSSID();
+    final bssid = '23:DE:7C:AA:35';
+    // final bssid = await getStrongestBSSID();
     if (bssid != null) {
       final url = Uri.parse("https://trackips.my.id/api/user-update-location/$bssid"); // ganti dengan IP server kamu
       try {

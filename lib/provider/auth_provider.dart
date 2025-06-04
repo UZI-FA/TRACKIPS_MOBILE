@@ -66,7 +66,7 @@ class AuthProvider extends ChangeNotifier {
       await _storeTokens(responseData);
 
       // Mulai background service
-      // await initializeService();
+      await initializeService();
 
       notifyListeners();
       return true;

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_background_service_android/flutter_background_service_android.dart';
 import 'package:wifi_scan/wifi_scan.dart';
@@ -24,6 +25,7 @@ Future<void> initializeService() async {
 
 void onStart(ServiceInstance service) async {
   // Jika berjalan di Android, tampilkan notifikasi foreground
+  WidgetsFlutterBinding.ensureInitialized();
   if (service is AndroidServiceInstance) {
     service.setAsForegroundService();
   }

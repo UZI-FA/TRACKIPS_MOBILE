@@ -102,8 +102,8 @@ class AuthProvider extends ChangeNotifier {
 
   Future<bool> logout() async {
     _token = null;
-    await _storage.delete(key: _token ?? '');
-    await _storage.delete(key: _refreshToken ?? '');
+    await _storage.delete(key: 'access_token');
+    await _storage.delete(key:'refreshToken');
 
     await _deleteTokens();
 
@@ -117,25 +117,25 @@ class AuthProvider extends ChangeNotifier {
 
   Future<void> _storeTokens(Map<String, dynamic> response) async {
     await _storage.write(
-      key: _token ?? '',
+      key: 'access_token',
       value: response['data']['access_token'],
     );
     
     if (response['data'].containsKey('refresh_token')) {
       await _storage.write(
-        key: _refreshToken ?? '',
+        key: 'refreshToken',
         value: response['data']['refresh_token'],
       );
     }
   }
 
   Future<void> _deleteTokens() async {
-    await _storage.delete(key: _token ?? '');
-    await _storage.delete(key: _refreshToken ?? '');
+    await _storage.delete(key: 'access_token');
+    await _storage.delete(key:'refreshToken');
   }
 
   Future<String?> getToken() async {
-    return await _storage.read(key: _token ?? '');
+    return await _storage.read(key: 'access_token');
   }
 
   void _handleResponse(http.Response response) {

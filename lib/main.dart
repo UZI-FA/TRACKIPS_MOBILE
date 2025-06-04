@@ -11,7 +11,7 @@ import 'routing.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await ServiceBackground.instance.init();
+  // await ServiceBackground.instance.init();
   runApp(
     ChangeNotifierProvider(
       create: (guard) => AuthProvider(),

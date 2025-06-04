@@ -51,6 +51,7 @@ class RoomPoint extends StatefulWidget  implements Point{
 
   @override
   Polygon buildPolygon() {
+    // print('di fungsi ${coordinates} \n---------\n');
     return Polygon(
       hitValue: name,
       points: coordinates,

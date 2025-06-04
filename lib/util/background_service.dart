@@ -51,7 +51,7 @@ void onStart(ServiceInstance service) {
   // }
   final storage = FlutterSecureStorage();
 
-  Timer.periodic(const Duration(minutes: 1), (timer) async {
+  Timer.periodic(const Duration(seconds: 30), (timer) async {
     final token = await storage.read(key: 'access_token');
 
     final bssid = await getStrongestBSSID();

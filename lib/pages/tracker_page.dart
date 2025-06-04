@@ -39,19 +39,22 @@ class _TrackerState extends State<Tracker> {
   bool _showOverlay = false;
   
   List<Point> points = [
-    UserPoint(name: "Alice", coordinates: LatLng(-6.40920, 108.28148)),
-    UserPoint(name: "Bob", coordinates: LatLng(-6.40935, 108.28138)),
-    RoomPoint(name: "LAB", coordinates: 
-      [LatLng(-6.40920, 108.28144)]
-    ),
+    // UserPoint(name: "Alice", coordinates: LatLng(-6.40920, 108.28148)),
+    // UserPoint(name: "Bob", coordinates: LatLng(-6.40935, 108.28138)),
+    // RoomPoint(name: "LAB", coordinates: 
+    //   [LatLng(-6.40920, 108.28144)]
+    // ),
   ];
 
   Future<bool> fetchResouces() async {
     final token = Provider.of<AuthProvider>(context, listen: false).token;
     var url = Uri.parse('https://trackips.my.id/api/map/1');
     var response = await http.get(url,headers: {
-      'Authorization' : 'Bearer $token'
+      'Authorization' : 'Bearer wqCgnMYzXC9Fg4Il0Tw6ICB5tIY2upnSSrqp1vkO5f268105'
+      // 'Authorization' : 'Bearer $token'
     });
+    // print(response.statusCode);
+    // print(jsonDecode(response.body));
     if (response.statusCode == 200) {
       //retrieve data
       var data = jsonDecode(response.body)['data'];
@@ -64,15 +67,21 @@ class _TrackerState extends State<Tracker> {
           bounds.add(LatLng(double.parse(bound['latitude']),double.parse(bound['longitude'])));
         }
         // add new RoomPoint
+        // print("----pisah----\n bound : ");
+        // print(bounds);
         points.add(RoomPoint(name: value['name'],coordinates: bounds,));
       }
+      // print("----pisah----\n points :");
+      // print(points[0]);
 
       //UserPoint
       // for (var value in data['user']) {
       //   points.add(UserPoint(name: value['name'],coordinates: bounds,));
       // }
+      buildPoint(points);
       return true;
     }
+    buildPoint(points);
     return false;
   }
 
@@ -81,9 +90,9 @@ class _TrackerState extends State<Tracker> {
     users = [];
     var url = Uri.parse('https://trackips.my.id/api/user-room/${room}');
     var response = await http.get(url,headers: {
+      // 'Authorization' : 'Bearer $token'
       'Authorization' : 'Bearer $token'
     });
-    print(response.body);
     if (response.statusCode == 200) {
       //retrieve data
       var data = jsonDecode(response.body)['data'];
@@ -98,10 +107,11 @@ class _TrackerState extends State<Tracker> {
   @override
   void initState(){
     super.initState();
-    buildPoint(points);
-    print('checkInit');
     fetchResouces();
+    print('checkInit');
+    print(points);
     _mapController = MapController();
+    // buildPoint(points);
     roomNotifier.addListener((){
       final hitVal = roomNotifier.value;
       var valhit = hitVal?.hitValues;
@@ -208,33 +218,33 @@ class _TrackerState extends State<Tracker> {
               MarkerLayer(
                 markers: markers,
               ),
-              CurrentLocationLayer(),
+              // CurrentLocationLayer(),
             ],
           ),
           // Crosshair in center
-          // const Center(
-          //   child: Icon(Icons.add_location, color: Colors.red, size: 32),
-          // ),
-          // // Coordinates info box
-          // Positioned(
-          //   bottom: 20,
-          //   left: 20,
-          //   right: 20,
-          //   child: Card(
-          //     color: Colors.white.withOpacity(0.8),
-          //     elevation: 4,
-          //     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          //     child: Padding(
-          //       padding: const EdgeInsets.all(12.0),
-          //       child: Text(
-          //         "Center Coordinate:\nLat: ${_center.latitude.toStringAsFixed(6)}, "
-          //         "Lng: ${_center.longitude.toStringAsFixed(6)}",
-          //         textAlign: TextAlign.center,
-          //         style: const TextStyle(fontSize: 16),
-          //       ),
-          //     ),
-          //   ),
-          // ),
+          const Center(
+            child: Icon(Icons.add_location, color: Colors.red, size: 32),
+          ),
+          // Coordinates info box
+          Positioned(
+            bottom: 20,
+            left: 20,
+            right: 20,
+            child: Card(
+              color: Colors.white.withOpacity(0.8),
+              elevation: 4,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Text(
+                  "Center Coordinate:\nLat: ${_center.latitude.toStringAsFixed(6)}, "
+                  "Lng: ${_center.longitude.toStringAsFixed(6)}",
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(fontSize: 16),
+                ),
+              ),
+            ),
+          ),
           if (_showOverlay)
             Positioned(
               left: 0,
@@ -343,7 +353,7 @@ class _TrackerState extends State<Tracker> {
             ),
           ),
           Positioned(
-            top: 45,
+            top: 43,
             right: 20,
             child: IconButton(
             icon: const Icon(Icons.logout),

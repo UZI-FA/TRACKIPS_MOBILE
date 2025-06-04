@@ -77,9 +77,11 @@ class _TrackerState extends State<Tracker> {
           for (var point in points)
             if (point is RoomPoint) point.name: point
         };
+      // print(roomMap['Akademik']);
       //UserPoint
       for (var value in data['user']) {
-        points.add(UserPoint(name: value['name'],coordinates: roomMap[value['room']]!.center_coordinate(),));
+        final room = roomMap[value['room']]!.center_coordinate();
+        points.add(UserPoint(name: value['users'][0]['name'],coordinates: room));
       }
       buildPoint(points);
       return true;
@@ -222,7 +224,7 @@ class _TrackerState extends State<Tracker> {
               MarkerLayer(
                 markers: markers,
               ),
-              CurrentLocationLayer(),
+              // CurrentLocationLayer(),
             ],
           ),
           // Crosshair in center

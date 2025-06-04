@@ -47,8 +47,8 @@ class UserPoint extends StatefulWidget  implements Point{
   Marker buildMarker() {
     return Marker(
       point: coordinates,
-      width: 100,
-      height: 12,
+      width: 0,
+      height: 0,
       child: this,
     );
   }

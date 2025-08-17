@@ -57,7 +57,8 @@ void onStart(ServiceInstance service) {
     final bssid = await getStrongestBSSID();
     if (bssid == null) return;
     
-    final url = Uri.parse("https://trackips.my.id/api/user-update-location/$bssid");
+    final url = Uri.parse("http://192.168.1.6/api/user-update-location/$bssid");
+    // final url = Uri.parse("https://trackips.my.id/api/user-update-location/$bssid");
     try {
       final res = await http.post(url,headers: {
         'Authorization' : 'Bearer $token'

@@ -4,10 +4,10 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_background_service/flutter_background_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:wifi_scan/wifi_scan.dart';
 
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class ServiceBackground {
   static final ServiceBackground instance = ServiceBackground._internal();
@@ -40,6 +40,11 @@ class ServiceBackground {
   }
 }
 
+Future<String> getToken() async{
+   final SharedPreferences _storage = await SharedPreferences.getInstance();
+   return await _storage.getString('access_token') ?? '';
+}
+
 @pragma('vm:entry-point')
 void onStart(ServiceInstance service) {
   DartPluginRegistrant.ensureInitialized();
@@ -49,10 +54,10 @@ void onStart(ServiceInstance service) {
   //     content: "Sending strongest BSSID...",
   //   );
   // }
-  final storage = FlutterSecureStorage();
+ 
 
   Timer.periodic(const Duration(seconds: 30), (timer) async {
-    final token = await storage.read(key: 'access_token');
+    final token = await getToken();
 
     final bssid = await getStrongestBSSID();
     if (bssid == null) return;

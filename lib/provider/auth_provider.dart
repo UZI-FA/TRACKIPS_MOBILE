@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
 import '../util/background_service.dart';
@@ -13,7 +13,6 @@ class AuthProvider extends ChangeNotifier {
   final String _baseUrl = 'http://192.168.1.6:8000/api/user';
   // production
   // final String _baseUrl = 'https://trackips.my.id/api/user';
-  FlutterSecureStorage _storage = FlutterSecureStorage();
   String? _token;
   String? get token => _token;
   String? _refreshToken;
@@ -93,6 +92,9 @@ class AuthProvider extends ChangeNotifier {
       _refreshToken = responseData['data']['refresh_token'];
       await _storeTokens(responseData);
 
+      // Mulai background service
+      await ServiceBackground().init();
+
       notifyListeners();
       return true;
     }
@@ -101,9 +103,10 @@ class AuthProvider extends ChangeNotifier {
   }
 
   Future<bool> logout() async {
+    final SharedPreferences _storage = await SharedPreferences.getInstance();
     _token = null;
-    await _storage.delete(key: 'access_token');
-    await _storage.delete(key:'refreshToken');
+    await _storage.remove('access_token');
+    await _storage.remove('refreshToken');
 
     await _deleteTokens();
 
@@ -115,26 +118,23 @@ class AuthProvider extends ChangeNotifier {
   }
 
   Future<void> _storeTokens(Map<String, dynamic> response) async {
-    await _storage.write(
-      key: 'access_token',
-      value: response['data']['access_token'],
-    );
+    final SharedPreferences _storage = await SharedPreferences.getInstance();
+    await _storage.setString('access_token',response['data']['access_token']);
     
     if (response['data'].containsKey('refresh_token')) {
-      await _storage.write(
-        key: 'refreshToken',
-        value: response['data']['refresh_token'],
-      );
+      await _storage.setString('refreshToken',response['data']['refresh_token']);
     }
   }
 
   Future<void> _deleteTokens() async {
-    await _storage.delete(key: 'access_token');
-    await _storage.delete(key:'refreshToken');
+    final SharedPreferences _storage = await SharedPreferences.getInstance();
+    await _storage.remove('access_token');
+    await _storage.remove('refreshToken');
   }
 
   Future<String?> getToken() async {
-    return await _storage.read(key: 'access_token');
+    final SharedPreferences _storage = await SharedPreferences.getInstance();
+    return await _storage.getString('access_token');
   }
 
   void _handleResponse(http.Response response) {

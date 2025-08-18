@@ -7,14 +7,19 @@ import 'package:go_router/go_router.dart';
 import 'provider/auth_provider.dart';
 import 'util/background_service.dart';
 import 'routing.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  final SharedPreferences _storage = await SharedPreferences.getInstance();
   // await ServiceBackground.instance.init();
   runApp(
     ChangeNotifierProvider(
-      create: (guard) => AuthProvider(),
+      create: (guard) => AuthProvider(
+        token: _storage.getString('accesstoken'),
+        refreshToken: _storage.getString('refreshtoken')
+      ),
       child: const IndoorNavigationApp(),
     ),
   );

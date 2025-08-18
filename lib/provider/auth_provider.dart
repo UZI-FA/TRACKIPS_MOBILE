@@ -13,31 +13,30 @@ class AuthProvider extends ChangeNotifier {
   final String _baseUrl = 'http://192.168.1.6:8000/api/user';
   // production
   // final String _baseUrl = 'https://trackips.my.id/api/user';
-  String? _token;
-  String? get token => _token;
-  String? _refreshToken;
+  String? token;
+  String? refreshToken;
 
-  bool get isAuthenticated => _token != null;
+  AuthProvider({ required this.token, required this.refreshToken});
+  bool get isAuthenticated => token != null;
 
   Future<bool> tryAutoLogin() async{
-    final token = await getToken();
     if(token != null){
       var url = Uri.parse('$_baseUrl');
       var response = await http.get(url,headers: {
         'Authorization' : 'Bearer $token'
       },);
       if (response.statusCode == 200){
-        _token = token;
+        token = token;
         return true;
       }
       
       url = Uri.parse('$_baseUrl/refresh-token');
       response = await http.get(url,headers: {
-        'Authorization' : 'Bearer $_refreshToken'
+        'Authorization' : 'Bearer $refreshToken'
       },);
       if (response.statusCode == 200){
         final responseData = jsonDecode(response.body);
-        _token = responseData['data']['access_token'];
+        token = responseData['data']['accesstoken'];
         
         await _storeTokens(responseData);
 
@@ -45,7 +44,7 @@ class AuthProvider extends ChangeNotifier {
       }
     }
     await _deleteTokens();
-    _token = null;
+    token = null;
     return false;
   }
   
@@ -59,8 +58,8 @@ class AuthProvider extends ChangeNotifier {
     });
     if (response.statusCode == 200) {
       final responseData = jsonDecode(response.body);
-      _token = responseData['data']['access_token'];
-      _refreshToken = responseData['data']['refresh_token'];
+      token = responseData['data']['accesstoken'];
+      refreshToken = responseData['data']['refreshtoken'];
 
       await _storeTokens(responseData);
 
@@ -88,8 +87,8 @@ class AuthProvider extends ChangeNotifier {
 
     if (response.statusCode == 200) {
       final responseData = jsonDecode(response.body);
-      _token = responseData['data']['access_token'];
-      _refreshToken = responseData['data']['refresh_token'];
+      token = responseData['data']['accesstoken'];
+      refreshToken = responseData['data']['refreshtoken'];
       await _storeTokens(responseData);
 
       // Mulai background service
@@ -104,9 +103,9 @@ class AuthProvider extends ChangeNotifier {
 
   Future<bool> logout() async {
     final SharedPreferences _storage = await SharedPreferences.getInstance();
-    _token = null;
-    await _storage.remove('access_token');
-    await _storage.remove('refreshToken');
+    token = null;
+    await _storage.remove('accesstoken');
+    await _storage.remove('refreshtoken');
 
     await _deleteTokens();
 
@@ -119,22 +118,17 @@ class AuthProvider extends ChangeNotifier {
 
   Future<void> _storeTokens(Map<String, dynamic> response) async {
     final SharedPreferences _storage = await SharedPreferences.getInstance();
-    await _storage.setString('access_token',response['data']['access_token']);
+    await _storage.setString('accesstoken',response['data']['accesstoken']);
     
-    if (response['data'].containsKey('refresh_token')) {
-      await _storage.setString('refreshToken',response['data']['refresh_token']);
+    if (response['data'].containsKey('refreshtoken')) {
+      await _storage.setString('refreshToken',response['data']['refreshtoken']);
     }
   }
 
   Future<void> _deleteTokens() async {
     final SharedPreferences _storage = await SharedPreferences.getInstance();
-    await _storage.remove('access_token');
+    await _storage.remove('accesstoken');
     await _storage.remove('refreshToken');
-  }
-
-  Future<String?> getToken() async {
-    final SharedPreferences _storage = await SharedPreferences.getInstance();
-    return await _storage.getString('access_token');
   }
 
   void _handleResponse(http.Response response) {

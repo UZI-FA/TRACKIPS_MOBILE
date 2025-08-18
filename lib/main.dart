@@ -17,8 +17,8 @@ Future<void> main() async {
   runApp(
     ChangeNotifierProvider(
       create: (guard) => AuthProvider(
-        token: _storage.getString('accesstoken'),
-        refreshToken: _storage.getString('refreshtoken')
+        token: _storage.getString('access_token'),
+        refresh_token: _storage.getString('refresh_token')
       ),
       child: const IndoorNavigationApp(),
     ),

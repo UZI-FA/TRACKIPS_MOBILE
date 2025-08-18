@@ -5,7 +5,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
 import '../util/background_service.dart';
-import 'package:flutter_background_service/flutter_background_service.dart';
 class AuthProvider extends ChangeNotifier {
   // local mobile
   // final String _baseUrl = 'http://192.168.137.1:8000/api/user';
@@ -14,9 +13,9 @@ class AuthProvider extends ChangeNotifier {
   // production
   // final String _baseUrl = 'https://trackips.my.id/api/user';
   String? token;
-  String? refreshToken;
+  String? refresh_token;
 
-  AuthProvider({ required this.token, required this.refreshToken});
+  AuthProvider({ required this.token, required this.refresh_token});
   bool get isAuthenticated => token != null;
 
   Future<bool> tryAutoLogin() async{
@@ -32,11 +31,11 @@ class AuthProvider extends ChangeNotifier {
       
       url = Uri.parse('$_baseUrl/refresh-token');
       response = await http.get(url,headers: {
-        'Authorization' : 'Bearer $refreshToken'
+        'Authorization' : 'Bearer $refresh_token'
       },);
       if (response.statusCode == 200){
         final responseData = jsonDecode(response.body);
-        token = responseData['data']['accesstoken'];
+        token = responseData['data']['access_token'];
         
         await _storeTokens(responseData);
 
@@ -58,8 +57,8 @@ class AuthProvider extends ChangeNotifier {
     });
     if (response.statusCode == 200) {
       final responseData = jsonDecode(response.body);
-      token = responseData['data']['accesstoken'];
-      refreshToken = responseData['data']['refreshtoken'];
+      token = responseData['data']['access_token'];
+      refresh_token = responseData['data']['refresh_token'];
 
       await _storeTokens(responseData);
 
@@ -87,8 +86,8 @@ class AuthProvider extends ChangeNotifier {
 
     if (response.statusCode == 200) {
       final responseData = jsonDecode(response.body);
-      token = responseData['data']['accesstoken'];
-      refreshToken = responseData['data']['refreshtoken'];
+      token = responseData['data']['access_token'];
+      refresh_token = responseData['data']['refresh_token'];
       await _storeTokens(responseData);
 
       // Mulai background service
@@ -104,8 +103,8 @@ class AuthProvider extends ChangeNotifier {
   Future<bool> logout() async {
     final SharedPreferences _storage = await SharedPreferences.getInstance();
     token = null;
-    await _storage.remove('accesstoken');
-    await _storage.remove('refreshtoken');
+    await _storage.remove('access_token');
+    await _storage.remove('refresh_token');
 
     await _deleteTokens();
 
@@ -118,17 +117,17 @@ class AuthProvider extends ChangeNotifier {
 
   Future<void> _storeTokens(Map<String, dynamic> response) async {
     final SharedPreferences _storage = await SharedPreferences.getInstance();
-    await _storage.setString('accesstoken',response['data']['accesstoken']);
+    await _storage.setString('access_token',response['data']['access_token']);
     
-    if (response['data'].containsKey('refreshtoken')) {
-      await _storage.setString('refreshToken',response['data']['refreshtoken']);
+    if (response['data'].containsKey('refresh_token')) {
+      await _storage.setString('refresh_token',response['data']['refresh_token']);
     }
   }
 
   Future<void> _deleteTokens() async {
     final SharedPreferences _storage = await SharedPreferences.getInstance();
-    await _storage.remove('accesstoken');
-    await _storage.remove('refreshToken');
+    await _storage.remove('access_token');
+    await _storage.remove('refresh_token');
   }
 
   void _handleResponse(http.Response response) {

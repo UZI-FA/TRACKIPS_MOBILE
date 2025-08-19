@@ -48,28 +48,32 @@ class _TrackerState extends State<Tracker> {
 
   Future<bool> fetchResouces() async {
     final token = Provider.of<AuthProvider>(context, listen: false).token;
-    var url = Uri.parse('http://192.168.1.6/api/map/1');
+    print(token);
+    var url = Uri.parse('http://192.168.1.6:8000/api/map/1');
     var response = await http.get(url,headers: {
       // 'Authorization' : 'Bearer wqCgnMYzXC9Fg4Il0Tw6ICB5tIY2upnSSrqp1vkO5f268105'
       'Authorization' : 'Bearer $token'
     });
-    // print(response.statusCode);
-    // print(jsonDecode(response.body));
+    print(response.statusCode);
+    print(jsonDecode(response.body));
     if (response.statusCode == 200) {
       //retrieve data
       var data = jsonDecode(response.body)['data'];
+      print(data);
       
       //RoomPoint
       for (var value in data['room']) {
-        List<LatLng> bounds = [];
-        for (var bound in value['bounds']) {
-          // assign bounds 
-          bounds.add(LatLng(double.parse(bound['latitude']),double.parse(bound['longitude'])));
+        if(value['bounds'].length != 0){
+          List<LatLng> bounds = [];
+          for (var bound in value['bounds']) {
+            // assign bounds 
+            bounds.add(LatLng(double.parse(bound['latitude']),double.parse(bound['longitude'])));
+          }
+          // add new RoomPoint
+          // print("----pisah----\n bound : ");
+          // print(bounds);
+          points.add(RoomPoint(name: value['name'],coordinates: bounds,));
         }
-        // add new RoomPoint
-        // print("----pisah----\n bound : ");
-        // print(bounds);
-        points.add(RoomPoint(name: value['name'],coordinates: bounds,));
       }
       // print("----pisah----\n points :");
       // print(points[0]);
@@ -77,11 +81,12 @@ class _TrackerState extends State<Tracker> {
           for (var point in points)
             if (point is RoomPoint) point.name: point
         };
-      // print(roomMap['Akademik']);
       //UserPoint
-      for (var value in data['user']) {
-        final room = roomMap[value['room']]!.center_coordinate();
-        points.add(UserPoint(name: value['users'][0]['name'],coordinates: room));
+      for (var value in data['room']) {
+        if(value['bounds'].length != 0){
+          final room = roomMap[value['name']]!.center_coordinate();
+          points.add(UserPoint(name: value['name'],coordinates: room));
+        }
       }
       buildPoint(points);
       return true;
@@ -93,7 +98,7 @@ class _TrackerState extends State<Tracker> {
   Future<void> fetchUserInRoom(String room) async{
     final token = Provider.of<AuthProvider>(context, listen: false).token;
     users = [];
-    var url = Uri.parse('https://trackips.my.id/api/user-room/${room}');
+    var url = Uri.parse('http://192.168.1.6:8000/api/user-room/${room}');
     var response = await http.get(url,headers: {
       'Authorization' : 'Bearer $token'
       // 'Authorization' : 'Bearer wqCgnMYzXC9Fg4Il0Tw6ICB5tIY2upnSSrqp1vkO5f268105'

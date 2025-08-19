@@ -65,8 +65,8 @@ class AuthProvider extends ChangeNotifier {
 
       // Mulai background service
       Workmanager().registerPeriodicTask(
-        "cleanup-task",
-        "cleanup",
+        "update-loc",
+        "update_wifi_loc",
         frequency: Duration(hours: 24),
       );
 
@@ -97,8 +97,8 @@ class AuthProvider extends ChangeNotifier {
 
       // Mulai background service
       Workmanager().registerPeriodicTask(
-        "cleanup-task",
-        "cleanup",
+        "update-loc",
+        "update_wifi_loc",
         frequency: Duration(hours: 24),
       );
 

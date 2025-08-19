@@ -54,7 +54,7 @@ Future<String?> getStrongestBSSID() async {
   final strongest = results.reduce((a, b) => a.level > b.level ? a : b);
 
   print("Strongest BSSID: ${strongest.bssid}, RSSI: ${strongest.level}");
-  return strongest.bssid+strongest.ssid;
+  return strongest.bssid;
 }
 
 Future<String> getToken() async{
@@ -86,6 +86,15 @@ void callbackDispatcher() {
       case "update_wifi_loc":
         await postUpdate();
         break;
+      case "updat":
+        print('background service run');
+        var url = Uri.parse('http://192.168.1.6:8000/api/user-update-location/ligma');
+        var response = await http.get(url,headers: {
+          // 'Authorization' : 'Bearer $token'
+          'Authorization' : 'Bearer aMxwr0s6nH4QACaRYXtJbRWZS2vO6inMpPK0TGX6a1465bc8'
+        });
+        print(response.statusCode);
+        break;
       default:
         // Handle unknown task types
         break;
@@ -101,7 +110,11 @@ class IndoorNavigationApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
-
+          Workmanager().registerPeriodicTask(
+        "update-kol",
+        "updat",
+        frequency: Duration(minutes : 15),
+      );
     final GoRouter router = Routing(authProvider);
 
     return MaterialApp.router(

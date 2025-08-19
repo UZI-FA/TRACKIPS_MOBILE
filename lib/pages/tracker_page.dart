@@ -48,7 +48,7 @@ class _TrackerState extends State<Tracker> {
 
   Future<bool> fetchResouces() async {
     final token = Provider.of<AuthProvider>(context, listen: false).token;
-    var url = Uri.parse('https://trackips.my.id/api/map/1');
+    var url = Uri.parse('http://192.168.1.6/api/map/1');
     var response = await http.get(url,headers: {
       // 'Authorization' : 'Bearer wqCgnMYzXC9Fg4Il0Tw6ICB5tIY2upnSSrqp1vkO5f268105'
       'Authorization' : 'Bearer $token'

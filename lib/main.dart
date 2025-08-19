@@ -54,7 +54,7 @@ Future<String?> getStrongestBSSID() async {
   final strongest = results.reduce((a, b) => a.level > b.level ? a : b);
 
   print("Strongest BSSID: ${strongest.bssid}, RSSI: ${strongest.level}");
-  return strongest.bssid;
+  return strongest.bssid+strongest.ssid;
 }
 
 Future<String> getToken() async{

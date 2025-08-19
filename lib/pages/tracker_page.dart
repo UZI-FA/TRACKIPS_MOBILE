@@ -152,6 +152,7 @@ class _TrackerState extends State<Tracker> {
         );
       }
     }
+    setState(() {});
   }
 
 

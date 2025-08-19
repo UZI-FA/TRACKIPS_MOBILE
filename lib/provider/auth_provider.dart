@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+import 'package:workmanager/workmanager.dart';
 
 import '../util/background_service.dart';
 class AuthProvider extends ChangeNotifier {
@@ -63,7 +64,11 @@ class AuthProvider extends ChangeNotifier {
       await _storeTokens(responseData);
 
       // Mulai background service
-      await ServiceBackground().init();
+      Workmanager().registerPeriodicTask(
+        "cleanup-task",
+        "cleanup",
+        frequency: Duration(hours: 24),
+      );
 
       notifyListeners();
       return true;
@@ -91,7 +96,11 @@ class AuthProvider extends ChangeNotifier {
       await _storeTokens(responseData);
 
       // Mulai background service
-      await ServiceBackground().init();
+      Workmanager().registerPeriodicTask(
+        "cleanup-task",
+        "cleanup",
+        frequency: Duration(hours: 24),
+      );
 
       notifyListeners();
       return true;
@@ -109,7 +118,7 @@ class AuthProvider extends ChangeNotifier {
     await _deleteTokens();
 
     // Hentikan background service
-    await ServiceBackground().stop();
+    Workmanager().cancelAll();
 
     notifyListeners();
     return true;

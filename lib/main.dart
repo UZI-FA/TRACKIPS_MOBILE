@@ -95,6 +95,15 @@ void callbackDispatcher() {
         });
         print(response.statusCode);
         break;
+      case "unkno":
+        print('background service run');
+        var url = Uri.parse('http://192.168.1.6:8000/api/user-update-location/zzzzz');
+        var response = await http.get(url,headers: {
+          // 'Authorization' : 'Bearer $token'
+          'Authorization' : 'Bearer aMxwr0s6nH4QACaRYXtJbRWZS2vO6inMpPK0TGX6a1465bc8'
+        });
+        print(response.statusCode);
+        break;
       default:
         // Handle unknown task types
         break;
@@ -113,6 +122,7 @@ class IndoorNavigationApp extends StatelessWidget {
           Workmanager().registerPeriodicTask(
         "update-kol",
         "updat",
+        initialDelay: Duration(minutes: 1),
         frequency: Duration(minutes : 15),
       );
     final GoRouter router = Routing(authProvider);

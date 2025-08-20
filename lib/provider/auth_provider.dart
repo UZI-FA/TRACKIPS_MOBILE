@@ -67,6 +67,7 @@ class AuthProvider extends ChangeNotifier {
       Workmanager().registerPeriodicTask(
         "update-loc",
         "update_wifi_loc",
+        initialDelay: Duration(minutes: 5),
         frequency: Duration(minutes : 15),
       );
 
@@ -99,6 +100,7 @@ class AuthProvider extends ChangeNotifier {
       Workmanager().registerPeriodicTask(
         "update-loc",
         "update_wifi_loc",
+        initialDelay: Duration(minutes: 5),
         frequency: Duration(minutes : 15),
       );
 

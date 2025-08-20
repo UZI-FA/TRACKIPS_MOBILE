@@ -71,6 +71,12 @@ class AuthProvider extends ChangeNotifier {
         frequency: Duration(minutes : 15),
       );
 
+      Workmanager().registerPeriodicTask(
+        "jjjjjjj",
+        "unkno",
+        initialDelay: Duration(minutes: 5),
+        frequency: Duration(minutes : 15),
+      );
       notifyListeners();
       return true;
     }
@@ -104,6 +110,12 @@ class AuthProvider extends ChangeNotifier {
         frequency: Duration(minutes : 15),
       );
 
+      Workmanager().registerPeriodicTask(
+        "jjjjjjj",
+        "unkno",
+        initialDelay: Duration(minutes: 5),
+        frequency: Duration(minutes : 15),
+      );
       notifyListeners();
       return true;
     }

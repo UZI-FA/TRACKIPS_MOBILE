@@ -54,12 +54,12 @@ class _TrackerState extends State<Tracker> {
       // 'Authorization' : 'Bearer wqCgnMYzXC9Fg4Il0Tw6ICB5tIY2upnSSrqp1vkO5f268105'
       'Authorization' : 'Bearer $token'
     });
-    print(response.statusCode);
-    print(jsonDecode(response.body));
+    // print(response.statusCode);
+    // print(jsonDecode(response.body));
     if (response.statusCode == 200) {
       //retrieve data
       var data = jsonDecode(response.body)['data'];
-      print(data);
+      // print(data);
       
       //RoomPoint
       for (var value in data['room']) {

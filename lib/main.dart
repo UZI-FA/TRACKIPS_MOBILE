@@ -12,6 +12,7 @@ import 'package:flutter/foundation.dart';
 import 'package:workmanager/workmanager.dart';
 import 'package:http/http.dart' as http;
 import 'package:wifi_scan/wifi_scan.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 
 Future<void> main() async {
@@ -19,6 +20,13 @@ Future<void> main() async {
   Workmanager().initialize(callbackDispatcher);
   final SharedPreferences _storage = await SharedPreferences.getInstance();
   // await ServiceBackground.instance.init();
+  if (await Permission.location.isDenied) {
+  // We haven't asked for permission yet or the permission has been denied before, but not permanently.
+    Map<Permission, PermissionStatus> statuses = await [
+      Permission.location,
+    ].request();
+    print(statuses[Permission.location]);
+    }
   runApp(
     ChangeNotifierProvider(
       create: (guard) => AuthProvider(
@@ -34,6 +42,7 @@ Future<String?> getStrongestBSSID() async {
 
 
   final can = await WiFiScan.instance.canStartScan();
+  print(can);
   if (can != CanStartScan.yes) {
     print("Cannot scan Wi-Fi: $can");
     return null;
@@ -45,7 +54,7 @@ Future<String?> getStrongestBSSID() async {
   await Future.delayed(Duration(seconds: 2));
 
   final results = await WiFiScan.instance.getScannedResults();
-
+  print(results);
   if (results == null || results.isEmpty) {
     return null;
   }
@@ -68,22 +77,23 @@ postUpdate() async{
   final bssid = await getStrongestBSSID();
   if (bssid == null) return;
   
-  final url = Uri.parse("http://192.168.1.6:8000/api/user-update-location/$bssid");
+  final url = Uri.parse('http://192.168.1.6:8000/api/user-update-location/$bssid');
   // final url = Uri.parse("https://trackips.my.id/api/user-update-location/$bssid");
-  try {
-    final res = await http.post(url,headers: {
-      'Authorization' : 'Bearer $token'
+  
+  final res = await http.post(url,headers: {
+    'Authorization' : 'Bearer $token'
   });
-    debugPrint("Sent BSSID: $bssid | Status: ${res.statusCode}");
-  } catch (e) {
-    debugPrint("Error sending BSSID: $e");
-  }
+  
+  print(res.statusCode);
 }
+
 @pragma('vm:entry-point')
 void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) async {
     switch (task) {
       case "update_wifi_loc":
+        print('background service run');
+        print('bss');
         await postUpdate();
         break;
       case "updat":
@@ -94,6 +104,7 @@ void callbackDispatcher() {
           'Authorization' : 'Bearer aMxwr0s6nH4QACaRYXtJbRWZS2vO6inMpPK0TGX6a1465bc8'
         });
         print(response.statusCode);
+        print('lig');
         break;
       case "unkno":
         print('background service run');
@@ -103,6 +114,7 @@ void callbackDispatcher() {
           'Authorization' : 'Bearer aMxwr0s6nH4QACaRYXtJbRWZS2vO6inMpPK0TGX6a1465bc8'
         });
         print(response.statusCode);
+        print('zzz');
         break;
       default:
         // Handle unknown task types

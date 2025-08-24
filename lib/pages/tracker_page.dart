@@ -113,6 +113,7 @@ class _TrackerState extends State<Tracker> {
         users.add(value['name']);
       }
     }
+    setState(() {});
   }
 
   @override

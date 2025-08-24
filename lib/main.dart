@@ -13,6 +13,7 @@ import 'package:workmanager/workmanager.dart';
 import 'package:http/http.dart' as http;
 import 'package:wifi_scan/wifi_scan.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'dart:convert';
 
 
 Future<void> main() async {
@@ -38,8 +39,30 @@ Future<void> main() async {
   );
 }
 
-Future<String?> getStrongestBSSID() async {
+Future<List?> getWifiList() async{
+  List<String> wifis = [];
+  final token = await getToken();
+  final url = Uri.parse('http://192.168.1.6:8000/api/user-wifi-info');
+  // final url = Uri.parse("https://trackips.my.id/api/user-wifi-info");
+  
+  final res = await http.get(url,headers: {
+    'Authorization' : 'Bearer $token'
+  });
 
+    if (res.statusCode == 200) {
+    //retrieve data
+    var data = jsonDecode(res.body)['data'];
+
+    for (var value in data['wifi']){
+      wifis.add(value['bssid']);
+    }
+  }
+  return wifis;
+}
+
+Future<String?> getStrongestBSSID() async {
+  // List Access Point On Server
+  List<String> wifiList = await getWifiList() as List<String>;
 
   final can = await WiFiScan.instance.canStartScan();
   print(can);
@@ -58,9 +81,10 @@ Future<String?> getStrongestBSSID() async {
   if (results == null || results.isEmpty) {
     return null;
   }
+  final filtered = results.where((item) => wifiList.contains(item.bssid)).toList();
 
   // Ambil BSSID dari sinyal terkuat (RSSI terbesar)
-  final strongest = results.reduce((a, b) => a.level > b.level ? a : b);
+  final strongest = filtered.reduce((a, b) => a.level > b.level ? a : b);
 
   print("Strongest BSSID: ${strongest.bssid}, RSSI: ${strongest.level}");
   return strongest.bssid;

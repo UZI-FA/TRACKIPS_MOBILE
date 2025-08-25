@@ -33,7 +33,7 @@ class _LoginPageState extends State<LoginPage> {
               const Icon(Icons.lock_outline, size: 64, color: Color.fromARGB(255, 100, 69, 255)),
               const SizedBox(height: 16),
               Text(
-                'Welcome Back',
+                'WTrackIPS',
                 style: GoogleFonts.poppins(
                   fontSize: 24,
                   fontWeight: FontWeight.w600,

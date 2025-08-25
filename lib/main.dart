@@ -158,12 +158,6 @@ class IndoorNavigationApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
-          Workmanager().registerPeriodicTask(
-        "update-kol",
-        "updat",
-        initialDelay: Duration(minutes: 1),
-        frequency: Duration(minutes : 15),
-      );
     final GoRouter router = Routing(authProvider);
 
     return MaterialApp.router(

@@ -78,10 +78,11 @@ Future<String?> getStrongestBSSID() async {
 
   final results = await WiFiScan.instance.getScannedResults();
   print(results);
-  if (results == null || results.isEmpty) {
+
+  final filtered = results.where((item) => wifiList.contains(item.bssid)).toList();
+  if (filtered == null || filtered.isEmpty) {
     return null;
   }
-  final filtered = results.where((item) => wifiList.contains(item.bssid)).toList();
 
   // Ambil BSSID dari sinyal terkuat (RSSI terbesar)
   final strongest = filtered.reduce((a, b) => a.level > b.level ? a : b);
@@ -99,12 +100,14 @@ postUpdate() async{
   final token = await getToken();
 
   final bssid = await getStrongestBSSID();
-  if (bssid == null) return;
+
+  String data = '$bssid';
+  if (bssid == null) {
+    data = 'null';
+  }
   
-  final url = Uri.parse('http://192.168.1.6:8000/api/user-update-location/$bssid');
   // final url = Uri.parse("https://trackips.my.id/api/user-update-location/$bssid");
-  
-  final res = await http.post(url,headers: {
+  final res = await http.post(Uri.parse('http://192.168.1.6:8000/api/user-update-location/$data'),headers: {
     'Authorization' : 'Bearer $token'
   });
   

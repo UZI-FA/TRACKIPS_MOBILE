@@ -46,10 +46,21 @@ class _TrackerState extends State<Tracker> {
     // ),
   ];
 
-  Future<bool> fetchResouces() async {
+  final Map<String, String> mapImages = {
+    '1': 'images/Lt_1.jpeg',
+    '2': 'images/Lt_2.jpeg',
+    '3': 'images/Lt_3.jpeg',
+    '4': 'images/Lt_4.jpeg',
+    '5': 'images/Lt_5.jpeg',
+    '6': 'images/Lt_6.jpeg',
+    '7': 'images/Lt_7.jpeg'
+  };
+
+  Future<bool> fetchResouces(int floor) async {
     final token = Provider.of<AuthProvider>(context, listen: false).token;
     print(token);
-    var url = Uri.parse('http://192.168.1.6:8000/api/map/1');
+    points = [];
+    var url = Uri.parse('http://192.168.1.6:8000/api/map/${floor}');
     var response = await http.get(url,headers: {
       // 'Authorization' : 'Bearer wqCgnMYzXC9Fg4Il0Tw6ICB5tIY2upnSSrqp1vkO5f268105'
       'Authorization' : 'Bearer $token'
@@ -119,7 +130,7 @@ class _TrackerState extends State<Tracker> {
   @override
   void initState(){
     super.initState();
-    fetchResouces();
+    fetchResouces(1);
     print('checkInit');
     print(points);
     _mapController = MapController();
@@ -127,18 +138,22 @@ class _TrackerState extends State<Tracker> {
     roomNotifier.addListener((){
       final hitVal = roomNotifier.value;
       var valhit = hitVal?.hitValues;
-      _selectedPolygon = valhit.toString();
-      if(_selectedPolygon != "null"){
-        _selectedPolygonName = _selectedPolygon.substring(1,_selectedPolygon.length-1);
-        fetchUserInRoom(_selectedPolygonName);
-        setState(() {
-          _showOverlay = true;
-        });
+      if(_selectedPolygon != valhit.toString()){
+        _selectedPolygon = valhit.toString();
+        if(_selectedPolygon != "null"){
+          _selectedPolygonName = _selectedPolygon.substring(1,_selectedPolygon.length-1);
+          fetchUserInRoom(_selectedPolygonName);
+          setState(() {
+            _showOverlay = true;
+          });
+        }
       }
     });
   }
 
   void buildPoint(List<Point> points){
+    markers.clear();
+    polygons.clear();
     for (final point in points) {
       if(point is UserPoint){
         markers.add(
@@ -162,15 +177,6 @@ class _TrackerState extends State<Tracker> {
     _mapController.move(_initialCenter, 20.0);
   }
   
-  final Map<String, String> mapImages = {
-    '1': 'images/Lt_1.jpeg',
-    '2': 'images/Lt_2.jpeg',
-    '3': 'images/Lt_3.jpeg',
-    '4': 'images/Lt_4.jpeg',
-    '5': 'images/Lt_5.jpeg',
-    '6': 'images/Lt_6.jpeg',
-    '7': 'images/Lt_7.jpeg'
-  };
 
 
   @override
@@ -357,6 +363,7 @@ class _TrackerState extends State<Tracker> {
                 );
               }).toList(),
               onChanged: (value) {
+                fetchResouces(int.parse(value??'1'));
                 setState(() {
                   selectedMap = value!;
                 });

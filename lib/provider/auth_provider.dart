@@ -103,6 +103,12 @@ class AuthProvider extends ChangeNotifier {
       await _storeTokens(responseData);
 
       // Mulai background service
+      Workmanager().registerOneOffTask(
+        "update-loc",
+        "update_wifi_loc",
+        initialDelay: Duration(seconds: 10),
+      );
+      
       Workmanager().registerPeriodicTask(
         "update-loc",
         "update_wifi_loc",

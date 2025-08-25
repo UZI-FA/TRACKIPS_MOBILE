@@ -60,7 +60,7 @@ class _TrackerState extends State<Tracker> {
     final token = Provider.of<AuthProvider>(context, listen: false).token;
     print(token);
     points = [];
-    var url = Uri.parse('http://192.168.1.6:8000/api/map/${floor}');
+    var url = Uri.parse('http://192.168.137.1:8000/api/map/${floor}');
     var response = await http.get(url,headers: {
       // 'Authorization' : 'Bearer wqCgnMYzXC9Fg4Il0Tw6ICB5tIY2upnSSrqp1vkO5f268105'
       'Authorization' : 'Bearer $token'
@@ -109,7 +109,7 @@ class _TrackerState extends State<Tracker> {
   Future<void> fetchUserInRoom(String room) async{
     final token = Provider.of<AuthProvider>(context, listen: false).token;
     users = [];
-    var url = Uri.parse('http://192.168.1.6:8000/api/user-room/${room}');
+    var url = Uri.parse('http://192.168.137.1:8000/api/user-room/${room}');
     var response = await http.get(url,headers: {
       'Authorization' : 'Bearer $token'
       // 'Authorization' : 'Bearer wqCgnMYzXC9Fg4Il0Tw6ICB5tIY2upnSSrqp1vkO5f268105'

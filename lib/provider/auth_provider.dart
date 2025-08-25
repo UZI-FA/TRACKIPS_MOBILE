@@ -8,9 +8,9 @@ import 'package:workmanager/workmanager.dart';
 import '../util/background_service.dart';
 class AuthProvider extends ChangeNotifier {
   // local mobile
-  // final String _baseUrl = 'http://192.168.137.1:8000/api/user';
+  final String _baseUrl = 'http://192.168.137.1:8000/api/user';
   // local web
-  final String _baseUrl = 'http://192.168.1.6:8000/api/user';
+  // final String _baseUrl = 'http://192.168.1.6:8000/api/user';
   // production
   // final String _baseUrl = 'https://trackips.my.id/api/user';
   String? token;

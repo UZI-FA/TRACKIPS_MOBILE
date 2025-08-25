@@ -42,7 +42,7 @@ Future<void> main() async {
 Future<List?> getWifiList() async{
   List<String> wifis = [];
   final token = await getToken();
-  final url = Uri.parse('http://192.168.1.6:8000/api/user-wifi-info');
+  final url = Uri.parse('http://192.168.137.1:8000/api/user-wifi-info');
   // final url = Uri.parse("https://trackips.my.id/api/user-wifi-info");
   
   final res = await http.get(url,headers: {
@@ -107,7 +107,7 @@ postUpdate() async{
   }
   
   // final url = Uri.parse("https://trackips.my.id/api/user-update-location/$bssid");
-  final res = await http.post(Uri.parse('http://192.168.1.6:8000/api/user-update-location/$data'),headers: {
+  final res = await http.post(Uri.parse('http://192.168.137.1:8000/api/user-update-location/$data'),headers: {
     'Authorization' : 'Bearer $token'
   });
   
@@ -125,7 +125,7 @@ void callbackDispatcher() {
         break;
       case "updat":
         print('background service run');
-        var url = Uri.parse('http://192.168.1.6:8000/api/user-update-location/ligma');
+        var url = Uri.parse('http://192.168.137.1:8000/api/user-update-location/ligma');
         var response = await http.get(url,headers: {
           // 'Authorization' : 'Bearer $token'
           'Authorization' : 'Bearer aMxwr0s6nH4QACaRYXtJbRWZS2vO6inMpPK0TGX6a1465bc8'
@@ -135,7 +135,7 @@ void callbackDispatcher() {
         break;
       case "unkno":
         print('background service run');
-        var url = Uri.parse('http://192.168.1.6:8000/api/user-update-location/zzzzz');
+        var url = Uri.parse('http://192.168.137.1:8000/api/user-update-location/zzzzz');
         var response = await http.get(url,headers: {
           // 'Authorization' : 'Bearer $token'
           'Authorization' : 'Bearer aMxwr0s6nH4QACaRYXtJbRWZS2vO6inMpPK0TGX6a1465bc8'
